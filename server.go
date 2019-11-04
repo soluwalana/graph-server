@@ -4,28 +4,11 @@ import (
     "net/http"
     "os"
     "log"
-    "bytes"
 )
 
 // DefaultPort is the default port to use if once is not specified by the SERVER_PORT environment variable
 const DefaultPort = "7893";
 
-const output = `{
-  "value": 5,
-  "left": {
-    "value": 3,
-    "left": { "value": 2, "left": {"left": {"value": 10}}, "right": {"value": 0}},
-    "right": { "value": 13, "right": {"value": 10} }
-  },
-  "right": {
-    "value": 3,
-    "left": {
-      "value": 4,
-      "right": { "value": 13 }
-    },
-    "right": { "value": 10 }
-  }
-}`
 
 func getServerPort() (string) {
     port := os.Getenv("SERVER_PORT");
@@ -46,7 +29,22 @@ func EchoHandler(writer http.ResponseWriter, request *http.Request) {
     // allow pre-flight headers
     writer.Header().Set("Access-Control-Allow-Headers", "Content-Range, Content-Disposition, Content-Type, ETag")
 
-    request.Write(bytes.NewBufferString(output))
+    writer.Write([]byte(`{
+      "value": 5,
+      "left": {
+        "value": 3,
+        "left": { "value": 2, "left": {"left": {"value": 10}}, "right": {"value": 0}},
+        "right": { "value": 13, "right": {"value": 10} }
+      },
+      "right": {
+        "value": 3,
+        "left": {
+          "value": 4,
+          "right": { "value": 13 }
+        },
+        "right": { "value": 10 }
+      }
+    }`))
 }
 
 func main() {
